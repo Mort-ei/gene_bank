@@ -1,7 +1,7 @@
 # 🧬 Gene Bank Relational Database
 A relational‐schema implementation (PostgreSQL 15) that unifies taxonomy, gene annotation, pathways, reactions, compounds, ontologies, and literature metadata—similar in spirit to resources such as **NCBI Gene** and **KEGG**.
 
-| ![ERD](docs/erd.png) |
+| [<img src="Docs/Erd.jpg" alt="ERD diagram" width="600">](Docs/Erd.png) |
 |:--:|
 | *Figure 1 – Full entity–relationship diagram (click to enlarge).* |
 
