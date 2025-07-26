@@ -2,7 +2,7 @@
 
 A **PostgreSQL 15** implementation of a relational schema for managing gene-related data. This database consolidates taxonomy, gene annotations, pathways, reactions, compounds, ontologies, and literature metadata—drawing inspiration from resources like **NCBI Gene** and **KEGG**.
 
-| [<img src="Docs/Erd.jpg" alt="ERD diagram" width="600">](Docs/Erd.jpg) |
+| [<img src="Docs/ERD Diagram.png" alt="ERD diagram" width="600">](Docs/ERD Diagram.png) |
 |:--:|
 | *Figure 1 – Full entity–relationship diagram (click to enlarge).* |
 
