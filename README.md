@@ -1,5 +1,6 @@
 # 🧬 Gene Bank Relational Database
-A relational‐schema implementation (PostgreSQL 15) that unifies taxonomy, gene annotation, pathways, reactions, compounds, ontologies, and literature metadata—similar in spirit to resources such as **NCBI Gene** and **KEGG**.
+
+A **PostgreSQL 15** implementation of a relational schema for managing gene-related data. This database consolidates taxonomy, gene annotations, pathways, reactions, compounds, ontologies, and literature metadata—drawing inspiration from resources like **NCBI Gene** and **KEGG**.
 
 | [<img src="Docs/Erd.jpg" alt="ERD diagram" width="600">](Docs/Erd.png) |
 |:--:|
@@ -7,53 +8,81 @@ A relational‐schema implementation (PostgreSQL 15) that unifies taxonomy, gene
 
 ---
 
-## 1  Why this project?
-Modern bioinformatics projects often juggle siloed flat-files (GBK, FASTA, GFF3), pathway records (KGML, SBML), and JSON/OBO ontologies.  
-A single, **normalized SQL schema** makes it easier to:
+## 1. Why this project?
+Modern bioinformatics workflows often rely on scattered flat files (GBK, FASTA, GFF3), pathway records (KGML, SBML), and JSON/OBO ontologies, making querying and integration difficult.
 
-* run complex JOINs across genes & pathways,
-* track variants, aliases, and cross-references,
-* keep provenance (publications, external DB IDs),
-* power APIs / dashboards without ORMs fighting nested JSON.
-
----
-
-## 2  Schema at a glance
-
-| Core table            | Purpose (key columns shown)                                                |
-|-----------------------|-----------------------------------------------------------------------------|
-| `Taxonomy`            | NCBI-style lineage (`TaxonomyID`, `ParentTaxonomyID`, `Rank`, names)        |
-| `Gene`                | One row per locus (`GeneID`, `TaxonomyID`, `GeneSymbol`, `Sequence` …)      |
-| `Sequence`, `Feature` | Raw sequence blobs + per-feature coords (CDS, UTR, exon, motif …)           |
-| `Pathway`, `GenePathway` | KEGG/Reactome pathways & M:N linker to genes                              |
-| `Reaction`, `CompoundReaction`, `Compound` | Stoichiometric reactions ↔ compounds                  |
-| `Ontology`, `GeneOntology` | GO terms + M:N linker                                                  |
-| `Enzyme`, `GeneAlias`, `Variant`, `Publication`, `CrossReference`, `OrthologyGroup` | auxiliary data |
-
-> See **docs/erd.png** for PK/FK details.
+This project provides a **normalized SQL schema** designed to:
+* Simplify **complex JOINs** across genes, pathways, and annotations.
+* Maintain **data integrity** using constraints, indexes, and relationships.
+* Enable **fast queries** and reporting with optimized SQL and transactions.
+* Provide a foundation for **ETL pipelines**, APIs, or dashboards.
 
 ---
 
-## 3  Tech stack
-
-* **PostgreSQL 15** (+ pgcrypto for UUIDs if desired)
-* **psql** & **pg_dump** for migrations / seeds
-* Python ≥3.10 (optional ETL scripts in `etl/`)
+## 2. What’s included?
+- **Schema Definitions:** SQL scripts for tables, primary/foreign keys, and constraints.
+- **Indexes & Optimizations:** Indexes for fast lookups on common query paths.
+- **Queries:** Example SQL queries for analytical use-cases.
+- **Sample Data:** Insert scripts to test and demonstrate functionality.
+- **Procedures & Transactions:** Stored procedures, triggers, and transaction examples.
 
 ---
 
-## 4  Getting started
+## 3. Schema Overview
 
-```bash
-# 1 Clone
-git clone https://github.com/Mort-ei/gene-bank-db.git
-cd gene-bank-db
+| Core Table             | Purpose (Key Columns)                                                     |
+|------------------------|--------------------------------------------------------------------------|
+| `Taxonomy`             | NCBI-style lineage (`TaxonomyID`, `ParentTaxonomyID`, `Rank`, `Name`)     |
+| `Gene`                 | One row per locus (`GeneID`, `TaxonomyID`, `GeneSymbol`, `Sequence`)      |
+| `Pathway`              | Pathway information (`PathwayID`, `Name`, `Description`)                  |
+| `GenePathway`          | M:N linker table between genes and pathways                              |
+| `Compound`, `Reaction` | Reactions and related compounds                                           |
+| `Ontology`             | GO terms and controlled vocabularies                                      |
+| `Publication`          | Metadata and references to literature                                    |
 
-# 2 Spin-up Postgres (Docker)
-docker compose up -d db
+> For all PK/FK relationships, refer to **Docs/ERD.png**.
 
-# 3 Create schema & seed minimal demo data
-psql "postgresql://postgres:postgres@localhost:5432/gene_bank" \
-     -f sql/00_schema.sql       \
-     -f sql/10_dummy_taxa.sql   \
-     -f sql/20_dummy_genes.sql
+---
+
+## 4. Tech Stack
+- **Database:** PostgreSQL 15
+- **Schema & Migrations:** `psql`, `pg_dump`
+- **Procedures & Transactions:** PL/pgSQL scripts
+- **Sample Data:** SQL insert scripts
+- **Optional ETL:** Python ≥3.10 (for loading and cleaning data)
+
+---
+
+## 5. Getting Started
+
+1. **Clone this repository:**
+   ```bash
+   git clone https://github.com/yourusername/gene-bank-relational-db.git
+   cd gene-bank-relational-db
+   ```
+
+2. **Create the database:**
+   ```bash
+   createdb gene_bank
+   psql -d gene_bank -f schema/tables.sql
+   psql -d gene_bank -f schema/constraints.sql
+   psql -d gene_bank -f schema/indexes.sql
+   psql -d gene_bank -f schema/sample_data.sql
+   ```
+
+3. **Run procedures and transactions:**
+   ```bash
+   psql -d gene_bank -f procedures/transactions.sql
+   ```
+
+---
+
+## 6. Future Improvements
+- Add real datasets (e.g., KEGG, Ensembl).
+- Implement REST API endpoints.
+- Add advanced triggers and audit logs.
+- Create Power BI dashboards or Jupyter-based analysis notebooks.
+
+---
+
+
